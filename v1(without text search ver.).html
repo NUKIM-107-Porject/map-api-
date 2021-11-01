@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&libraries=places&callback=createMap" async defer></script>
+        <style>
+            html,
+            body,
+            #map {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+
+
+    <body>
+        <form>
+            Search:<input type="text" name="Search">
+            <input type='button' name='submit' value='click'>
+        </form>
+        <div id="map"></div>
+        <script>
+
+            var map;
+            var infoWindow;
+            var request;
+            var pos;
+            const searchtxt=document.getElementByName('Search')[0].value;
+
+
+            function createMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {
+                        lat: 22.687370,
+                        lng: 120.301476
+                    },
+                    zoom: 14
+                });
+                getCurrentLoc();
+
+            }
+
+
+            function getCurrentLoc(){
+                infoWindow = new google.maps.InfoWindow({map: map});
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+
+                        infoWindow.setPosition(pos);
+                        infoWindow.setContent('Location found.');
+                        map.setCenter(pos);
+                        nearbysearch();
+
+                    }, function() {
+                        handleLocationError(true, infoWindow, map.getCenter());
+                    });
+                } else {
+                    // Browser doesn't support Geolocation
+                    handleLocationError(false, infoWindow, map.getCenter());
+                }
+            }
+
+
+            function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                infoWindow.setPosition(pos);
+                infoWindow.setContent(browserHasGeolocation ?
+                                    'Error: The Geolocation service failed.' :
+                                    'Error: Your browser doesn\'t support geolocation.');
+            }
+
+            function nearbysearch(){
+                var request = {
+                    location: map.getCenter(),
+                    radius: 1500,
+                    types: ['cafe']
+                }
+
+                var service = new google.maps.places.PlacesService(map);
+
+                service.nearbySearch(request, callback);
+            }
+            
+
+            function callback(results, status) {
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    console.log(results.length);
+                    for (var i = 0; i < results.length; i++) {
+                    createMarker(results[i]);
+                    }
+                }
+            }
+
+            function createMarker(place) {
+                var placeLoc = place.geometry.location;
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: place.geometry.location,
+                    title: place.name
+                })
+            }
+        </script>
+    </body>
+</html>
+
+
