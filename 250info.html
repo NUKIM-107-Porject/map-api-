@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&libraries=places&callback=createMap" async defer></script>
+        <style>
+            html,
+            body,
+            #map {
+                height: 99%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+
+
+    <body>
+        <form>
+            <input type="button" value="cafe" onclick="cafe();"/>
+            <input type="button" value="hospital" onclick="hospital();"/>
+            <input type="button" value="restaurant" onclick="restaurant();"/>
+            <input type="button" value="pharmacy" onclick="pharmacy();"/>
+            <input type="button" value="convenience_store" onclick="convenience_store();"/>
+            <input type="button" value="supermarket" onclick="supermarket();"/>
+            <input type="button" value="parking" onclick="parking();"/>
+            <input type="button" value="doctor" onclick="doctor();"/>
+        </form>
+        <div id="map"></div>
+        <script>
+
+            var map;
+            var infoWindow;
+            var request;
+            var pos;
+            var markers=[];
+            var marker;
+
+
+            function createMap() {
+                var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 11,
+    center: {lat: 22.687370, lng: 120.301476}
+  });
+
+  var ctaLayer = new google.maps.KmlLayer({
+    url: 'https://nukim-107-porject.github.io/-/pay.kml',
+    map: map
+  });
+            getCurrentLoc();
+            }
+
+
+            function getCurrentLoc(){
+                infoWindow = new google.maps.InfoWindow({map: map});
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+
+                        infoWindow.setPosition(pos);
+                        infoWindow.setContent('Location found.');
+                        map.setCenter(pos);
+
+                    }, function() {
+                        handleLocationError(true, infoWindow, map.getCenter());
+                    });
+                } else {
+                    // Browser doesn't support Geolocation
+                    handleLocationError(false, infoWindow, map.getCenter());
+                }
+            }
+
+
+            function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                infoWindow.setPosition(pos);
+                infoWindow.setContent(browserHasGeolocation ?
+                                    'Error: The Geolocation service failed.' :
+                                    'Error: Your browser doesn\'t support geolocation.');
+            }
+
+            function cafe(){
+                deleteMarkers();
+
+                var request = {
+                    location: map.getCenter(),
+                    radius: 1500,
+                    types: ["cafe"]
+                }
+
+                var service = new google.maps.places.PlacesService(map);
+
+                service.nearbySearch(request, callback);
+            }
+
+            function hospital(){
+
+                deleteMarkers();
+
+                var request = {
+                    location: map.getCenter(),
+                    radius: 1500,
+                    types: ["hospital"]
+                }
+
+                var service = new google.maps.places.PlacesService(map);
+
+                service.nearbySearch(request, callback);
+            }
+
+            function restaurant(){
+                deleteMarkers();
+
+                var request = {
+                    location: map.getCenter(),
+                    radius: 1500,
+                    types: ["restaurant"]
+                }
+
+                var service = new google.maps.places.PlacesService(map);
+
+                service.nearbySearch(request, callback);
+            }
+
+            function convenience_store(){
+                deleteMarkers();
+
+                var request = {
+                    location: map.getCenter(),
+                    radius: 1500,
+                    types: ["convenience_store"]
+                }
+
+                var service = new google.maps.places.PlacesService(map);
+
+                service.nearbySearch(request, callback);
+            }
+
+            function parking(){
+                deleteMarkers();
+
+                var request = {
+                    location: map.getCenter(),
+                    radius: 1500,
+                    types: ["parking"]
+                }
+
+                var service = new google.maps.places.PlacesService(map);
+
+                service.nearbySearch(request, callback);
+            }
+
+            function doctor(){
+                deleteMarkers();
+                var request = {
+                    location: map.getCenter(),
+                    radius: 1500,
+                    types: ["doctor"]
+                }
+
+                var service = new google.maps.places.PlacesService(map);
+
+                service.nearbySearch(request, callback);
+            }
+
+
+
+            function pharmacy(){
+                deleteMarkers();
+                var request = {
+                    location: map.getCenter(),
+                    radius: 1500,
+                    types: ["pharmacy"]
+                }
+
+                var service = new google.maps.places.PlacesService(map);
+
+                service.nearbySearch(request, callback);
+            }
+
+            function supermarket(){
+                deleteMarkers();
+                var request = {
+                    location: map.getCenter(),
+                    radius: 1500,
+                    types: ["supermarket"]
+                }
+
+                var service = new google.maps.places.PlacesService(map);
+
+                service.nearbySearch(request, callback);
+            }
+
+
+
+            
+
+            function callback(results, status) {
+                if (status == google.maps.places.PlacesServiceStatus.OK) {
+                    for (var i = 0; i < results.length; i++) {
+                        createMarker(results[i]);
+                    }
+                }
+            }
+
+            function createMarker(place) {
+                marker = new google.maps.Marker({
+                    map: map,
+                    position: place.geometry.location,
+                    title: place.name
+                });
+                markers.push(marker);
+            }
+
+
+            function deleteMarkers() {
+                for(var i=0;i<markers.length;i++){
+                    markers[i].setMap(null);
+                }
+            }
+
+        </script>
+    </body>
+</html>
