@@ -15,6 +15,7 @@
 
 
     <body>
+        <?php include('DBconnection.php')?>
         <form>
             <input type="button" value="cafe" onclick="cafe();"/>
             <input type="button" value="hospital" onclick="hospital();"/>
@@ -24,6 +25,8 @@
             <input type="button" value="supermarket" onclick="supermarket();"/>
             <input type="button" value="parking" onclick="parking();"/>
             <input type="button" value="doctor" onclick="doctor();"/>
+            <input type="button" value="currentLoc" onclick="getCurrentLoc();"/>
+
         </form>
         <div id="map"></div>
         <script>
@@ -213,7 +216,7 @@
                 });
                 markers.push(marker);
                 infowindow=new google.maps.InfoWindow({
-                    
+                    content:"123\n123"
                 });
                 google.maps.event.addListener(marker,'click',createInfo(marker));
             }
@@ -241,10 +244,7 @@
             }
 
             function setplaceinfo(place){
-                var infowindow = new google.maps.InfoWindow({
-
-                });  
-
+                var test=place.name;
                 google.maps.event.addListener(marker,'click', (function(marker,infowindow){ 
                     return function() {
                         infowindow.open(map,marker);
